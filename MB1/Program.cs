@@ -71,54 +71,72 @@ namespace MB1
 
         }
 
+
+
         static bool TestArrCard(ref ArrayList ArrCard)
         {
             // Перед сортировкой требуется проверить:
             //  - в наличии одно начало и один конец 
             // составим словарь пунктов отправлений
             var dict = new Dictionary<string, int>();
+            
+
+            #region Набираем словарь 
+            
             foreach (Card card in ArrCard)
             {
-                // Увеличить значение, если ключ в списке
-                if (dict.ContainsKey(card.Start) || dict.ContainsKey(card.Stop))
+                // считаем/добавляем ключи по списку Start
+                if (dict.ContainsKey(card.Start))
                 {
-
-                    if (dict.ContainsKey(card.Start))
-                    {
-                        dict[card.Start] = +1;
+                            dict[card.Start] += 1;
+                            
+                }
+                    else
+                    {         
+                                dict.Add(card.Start, 1);
                     }
+                // считаем/добавляем ключи по списку Stop
+                if (dict.ContainsKey(card.Stop))
+                {          
+                        dict[card.Stop] += 1;
+                }
                     else
                     {
-                        dict[card.Stop] = +1;
+                            dict.Add(card.Stop, 1);
                     }
-                }
-                // иначе добавить в список со значением 1
-                else
-                {
-                    if (!dict.ContainsKey(card.Start))
-                    {
-                        dict.Add(card.Start, 1);
-                    }
-                    else
-                    {
-                        dict.Add(card.Stop, 1);
-                    }
-                }
             }
 
-            // Проевряем список пунктов на наличие лишних хвостов
-            int max = dict.OrderByDescending(x => x.Value).FirstOrDefault().Value;
-            max = 2;
 
-            if (max == 2)
-            {
-                Console.WriteLine("Максимальное количество элементов - 2");
+            #endregion
+           
+            // Проверка 
+            int max = dict.Max(d => d.Value);
+            // Проверка списка на единственность точек Start и Stop
+            var FindStartStopPoint = dict.Where(d => d.Value == 1);
+
+            // Результат проверки карточек маршрута
+            if (max == 2 && FindStartStopPoint.Count() == 2)
+            {               
+
+                Console.WriteLine("max = "+max+"\n StartStopPoint :");
+                foreach (KeyValuePair<string, int> pair in FindStartStopPoint)
+                    {
+                        Console.WriteLine(pair.Key);
+                    }
                 return true;
             }
             else
-            { return false; }
-            Console.ReadKey();
-        return true;
+            {
+                Console.WriteLine("Обнаружена ошибка в точках маршрута");
+                if(FindStartStopPoint.Count() > 2)
+                foreach (KeyValuePair<string, int> pair in FindStartStopPoint)
+                    {
+                        Console.WriteLine(pair.Key);
+                    }
+
+                Console.ReadKey();
+                return false;
+            } 
         }
 
 
