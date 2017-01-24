@@ -106,7 +106,7 @@ namespace MB1
                     }
             }
 
-
+           // comment
             #endregion
            
             // Проверка 
