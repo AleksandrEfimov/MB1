@@ -26,7 +26,6 @@ namespace MB1
 
         static void Main(string[] args)
         {
-            
 
            // Инициализация массива карточек
             ArrayList ArrCard = new ArrayList(); 
@@ -34,39 +33,29 @@ namespace MB1
             ArrCard.Add(new Card("Ярославль", "Архангельск"));
             ArrCard.Add(new Card("Архангельск", "Питер"));
             ArrCard.Add(new Card("Орел", "Москва"));
-            //ArrCard.Add(new Card("Берлин", "Москва"));
+            // 
+             ArrCard.Add(new Card("Берлин", "Москва"));
 
             int Count = ArrCard.Count;
             string StartPoint;
 
-            // Проверим набор на сходимость ( Одно начало, один конец) 
+            // Проверим набор на сходимость ( Одно начало, один конец, небольше 2х упоминаий пунктов маршрутов) 
             if (TestArrCard(ref ArrCard))
             {
 
                 // индекс карты начала маршрута в массиве 
-                int start = FindStart(ref ArrCard, ref Count, out StartPoint);
-                Console.WriteLine("Позиция карты с началом маршрута: " + (start + 1));
+                int startIndex = FindStart(ref ArrCard, ref Count, out StartPoint);
+                Console.WriteLine("Номер карты с началом маршрута: " + (startIndex + 1));
                 Console.WriteLine("Начало маршрута в точке:  " + StartPoint);
 
                 // Сортировка и вывод отсортированного массива
-
-                ArrCard = Sort(ref ArrCard, ref Count, start);
-                Console.WriteLine("Отправление: \t  Назначение: \n");
+                ArrCard = Sort(ref ArrCard, ref Count, startIndex);
+                Console.WriteLine("Пункт отправления:   Пункт назначения: \n");
                 foreach (Card card in ArrCard)
                     Console.WriteLine(" - " + card.Start + " \t-->  " + card.Stop);
 
-                // Завершение программы
                 Console.ReadKey();
 
-                List<Card> ArStrongCard = new List<Card>();
-
-                ArStrongCard.Add(new Card("lkj", "lkj"));
-                ArStrongCard.Add(new Card("lkj", "lkj"));
-
-
-                //ArStrongCard[0].Start = "zxc";
-                //ArStrongCard[1].Start = "zsdfc";
-                //Console.WriteLine("ArStronCard"+ArStrongCard[0].Start);
             }
 
         }
@@ -75,17 +64,18 @@ namespace MB1
 
         static bool TestArrCard(ref ArrayList ArrCard)
         {
+            //
             // Перед сортировкой требуется проверить:
-            //  - в наличии одно начало и один конец 
-            // составим словарь пунктов отправлений
+            // имеем в наличии одно начало маршрута и один конец .
+            // Составим словарь пунктов отправлений
+            // 
             var dict = new Dictionary<string, int>();
-            
 
-            #region Набираем словарь 
-            
+            // Заполняем словарь
+            #region 
             foreach (Card card in ArrCard)
             {
-                // считаем/добавляем ключи по списку Start
+                // считаем или добавляем ключи по списку Start
                 if (dict.ContainsKey(card.Start))
                 {
                             dict[card.Start] += 1;
@@ -95,7 +85,7 @@ namespace MB1
                     {         
                                 dict.Add(card.Start, 1);
                     }
-                // считаем/добавляем ключи по списку Stop
+                //  ------    --//--    ------          Stop
                 if (dict.ContainsKey(card.Stop))
                 {          
                         dict[card.Stop] += 1;
@@ -105,35 +95,25 @@ namespace MB1
                             dict.Add(card.Stop, 1);
                     }
             }
-
-           // comment
             #endregion
-           
-            // Проверка 
+
+            // Проверка полученного словаря.
+            // Максимум упоминаний точек ( Должен быть равным 2. Исключаем повторный заезд в какой-либо пункт)
+            // Количества точек упоминаемых единожды (признак начала/конца)
             int max = dict.Max(d => d.Value);
-            // Проверка списка на единственность точек Start и Stop
             var FindStartStopPoint = dict.Where(d => d.Value == 1);
 
-            // Результат проверки карточек маршрута
+            // Проверка заданным условиям
             if (max == 2 && FindStartStopPoint.Count() == 2)
             {               
-
-                Console.WriteLine("max = "+max+"\n StartStopPoint :");
-                foreach (KeyValuePair<string, int> pair in FindStartStopPoint)
-                    {
-                        Console.WriteLine(pair.Key);
-                    }
                 return true;
             }
             else
             {
-                Console.WriteLine("Обнаружена ошибка в точках маршрута");
-                if(FindStartStopPoint.Count() > 2)
-                foreach (KeyValuePair<string, int> pair in FindStartStopPoint)
-                    {
-                        Console.WriteLine(pair.Key);
-                    }
-
+                Console.WriteLine("Обнаружена ошибка в точках маршрута.");
+                if (max > 2) { Console.WriteLine("Error max = {0}", max); }
+                if (FindStartStopPoint.Count() > 2)
+                             { Console.WriteLine("Маршрут имеет несколько начальных или конечных точек"); }
                 Console.ReadKey();
                 return false;
             } 
@@ -209,7 +189,7 @@ namespace MB1
                     if (SortedArrList.Count == Count)
                     {
                         is_sorted = true;
-                        Console.WriteLine("\n Sorting is done");
+                        Console.WriteLine("\n...Сортировка окончена");
                     }
 
             }
