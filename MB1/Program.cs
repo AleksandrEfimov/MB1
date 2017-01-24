@@ -10,18 +10,7 @@ namespace MB1
     class Program
     {
         
-        struct Card 
-        {
-            public Card(string start, string stop)
-            {
-                Start = start;
-                Stop = stop;
-            }
-            public string Start;
-            public string Stop;
-
-            
-        }
+        
 
 
         static void Main(string[] args)
@@ -34,7 +23,7 @@ namespace MB1
             ArrCard.Add(new Card("Архангельск", "Питер"));
             ArrCard.Add(new Card("Орел", "Москва"));
             // 
-             ArrCard.Add(new Card("Берлин", "Москва"));
+             //ArrCard.Add(new Card("Берлин", "Москва"));
 
             int Count = ArrCard.Count;
             string StartPoint;
