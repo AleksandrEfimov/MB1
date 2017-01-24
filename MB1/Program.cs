@@ -34,7 +34,7 @@ namespace MB1
             ArrCard.Add(new Card("Ярославль", "Архангельск"));
             ArrCard.Add(new Card("Архангельск", "Питер"));
             ArrCard.Add(new Card("Орел", "Москва"));
-            ArrCard.Add(new Card("Берлин", "Москва"));
+            //ArrCard.Add(new Card("Берлин", "Москва"));
 
             int Count = ArrCard.Count;
             string StartPoint;
@@ -140,47 +140,40 @@ namespace MB1
         }
 
 
+        // Функция поиска в массиве расположения карточки с началом маршрута
         static int FindStart(ref ArrayList ArList, ref int Count, out string StartPoint )
         {
-            int start = 0 ;
+            int start_pos = 0 ;
             StartPoint = "Ошибка в наборе карт маршрута. Не найдена точка старта.";
-            bool isHaveInStop=false; // в списке Stop обнаружен одноименный Start
+            bool isHaveInStop=false; // флаг уникальности точки старта 
 
-            Card card_x;
-            Card card_y;
+            Card card_i;
+            Card card_j;
             
 
-            
-            // Найти начало - Start и конец - Stop маршрута
-            //  
+                for (int i = 0; i < Count ; i++)
+                {   card_i = (Card)ArList[i];
 
-            
-
-            for (int i = 0; i < Count ; i++)
-            {   card_x = (Card)ArList[i];
-
+                // сравнение начальной точки с конечными 
                 for (int j=0; j < Count; j++)
-                {   card_y = (Card)ArList[j];
-
+                    {   card_j = (Card)ArList[j];
                     
-
-
-                    // проверка совпадений Start со Stop
-                    if (card_x.Start == card_y.Stop)
-                        {
-                            isHaveInStop = true; // есть совпадение
-                            break;               // переходим к следующей карточке
-                        }
-                        else isHaveInStop = false;
+                            if (card_i.Start == card_j.Stop)
+                                {
+                                    isHaveInStop = true; 
+                                    break;               
+                                }
+                            else isHaveInStop = false;
+                    }
+                // после перебора карт запоминаем позицию в массиве и наименование старта
+                    if (isHaveInStop == false)
+                    {
+                        start_pos = i;
+                        StartPoint = card_i.Start;
+                        break;
+                    }   
                 }
-                if (isHaveInStop == false)
-                {
-                    start = i;
-                    StartPoint = card_x.Start;
-                    break;
-                }   
-            }
-            return start;
+            return start_pos;
         }
 
         
@@ -188,44 +181,39 @@ namespace MB1
 
 
 
-
+        // Функция сортировки массива карточек
         static ArrayList Sort(ref ArrayList ArList, ref int Count, int start)
         {
-            bool completed = false;
-
+            
             Card cardStart = (Card)ArList[start];
-
             ArrayList SortedArrList = new ArrayList();
             SortedArrList.Add(cardStart);
 
-            Console.WriteLine("The sorting began...");
+            Console.WriteLine("Запуск сортировки...");
 
-            while ( !completed )
+            bool is_sorted = false;
+
+            while ( !is_sorted )
             {
-                foreach(Card crd in ArList)
-                {       
-                    if (crd.Start == cardStart.Stop)
-                    {
-                        SortedArrList.Add(crd);
-                        cardStart = crd;       
+                    foreach(Card crd in ArList)
+                    {       
+                        if (crd.Start == cardStart.Stop)
+                        {
+                            SortedArrList.Add(crd);
+                            cardStart = crd;       
+                        }
                     }
-                }
 
-                Console.WriteLine("Сртировка. Кол-во в сортМассиве " + SortedArrList.Count);
+                
+                    // выход из цикла определяется равенством количества элементов в массивах
+                    if (SortedArrList.Count == Count)
+                    {
+                        is_sorted = true;
+                        Console.WriteLine("\n Sorting is done");
+                    }
 
-                if (SortedArrList.Count == Count)
-                {
-                    completed = true;
-                    Console.WriteLine("\n Sorting is done");
-                }
-                //else if (SortedArrList.Count > Count)
-                //{
-                //    Console.WriteLine("\n Сортировка не выполнена. \nВозможно, одноименная точка Start/Stop встречается больше 2х раз.");
-                //    break;
-                //}
             }
             return SortedArrList;
-
         }
     }
 }
