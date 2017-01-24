@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassCard.cs" />
+    <Compile Include="ClassFindStart_and_Sort.cs" />
+    <Compile Include="ClassTestArray.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
